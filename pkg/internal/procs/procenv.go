@@ -12,7 +12,9 @@ import (
 )
 
 func envStrsToMap(varsStr []string) map[string]string {
-	vars := make(map[string]string, len(varsStr))
+	// setproctitle can leave thousands of empty entries in /proc/<pid>/environ.
+	// Avoid reserving map capacity for entries that will be discarded.
+	vars := map[string]string{}
 
 	for _, s := range varsStr {
 		keyVal := strings.SplitN(s, "=", 2)
